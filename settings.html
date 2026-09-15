@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings – MailSphere S</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main-area">
+      <div id="header-mount"></div>
+      <main class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Settings</h1>
+            <p class="page-subtitle">Customize your MailSphere S experience</p>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Settings nav -->
+          <div class="settings-nav glass" style="padding:var(--space-8);height:fit-content">
+            <button class="settings-nav-item active" data-panel="appearance" id="navAppearance">
+              <span id="iconAppearance"></span> Appearance
+            </button>
+            <button class="settings-nav-item" data-panel="notifications" id="navNotifications">
+              <span id="iconNotifications"></span> Notifications
+            </button>
+            <button class="settings-nav-item" data-panel="general" id="navGeneral">
+              <span id="iconGeneral"></span> General
+            </button>
+            <button class="settings-nav-item" data-panel="data" id="navData">
+              <span id="iconData"></span> Data
+            </button>
+            <button class="settings-nav-item" data-panel="gmail" id="navGmail">
+              <span id="iconGmail"></span> Gmail
+            </button>
+          </div>
+
+          <!-- Settings panels -->
+          <div>
+            <!-- Appearance -->
+            <div class="settings-panel active glass" id="panelAppearance" style="padding:var(--space-20)">
+              <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-12)">Appearance</h2>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Theme</div>
+                  <div class="setting-desc">Choose your preferred color scheme</div>
+                </div>
+                <div class="theme-options">
+                  <div class="theme-option theme-option-dark" data-theme="dark" id="themeDark">
+                    <div class="theme-option-label">Dark</div>
+                  </div>
+                  <div class="theme-option theme-option-light" data-theme="light" id="themeLight">
+                    <div class="theme-option-label">Light</div>
+                  </div>
+                  <div class="theme-option theme-option-auto" data-theme="auto" id="themeAuto">
+                    <div class="theme-option-label">Auto</div>
+                  </div>
+                </div>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Compact mode</div><div class="setting-desc">Reduce spacing for denser inbox scanning</div></div>
+                <label class="toggle"><input type="checkbox" id="compactToggle" /><span class="toggle-slider"></span></label>
+              </div>
+            </div>
+
+            <!-- Notifications -->
+            <div class="settings-panel glass" id="panelNotifications" style="padding:var(--space-20)">
+              <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-12)">Notifications</h2>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Push Notifications</div>
+                  <div class="setting-desc">Show notifications for new emails and alerts</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="notifToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info"><div class="setting-label">Collapse sidebar by default</div><div class="setting-desc">Keep navigation compact between sessions</div></div>
+                <label class="toggle"><input type="checkbox" id="sidebarToggle" /><span class="toggle-slider"></span></label>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Sound Alerts</div>
+                  <div class="setting-desc">Play a sound when a new email arrives</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="soundToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <!-- General -->
+            <div class="settings-panel glass" id="panelGeneral" style="padding:var(--space-20)">
+              <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-12)">General</h2>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Language</div>
+                  <div class="setting-desc">Select your preferred display language</div>
+                </div>
+                <select class="select" id="languageSelect">
+                  <option value="en">English</option>
+                  <option value="es">Spanish</option>
+                  <option value="fr">French</option>
+                  <option value="de">German</option>
+                  <option value="hi">Hindi</option>
+                  <option value="zh">Chinese</option>
+                  <option value="ar">Arabic</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Auto Refresh</div>
+                  <div class="setting-desc">Automatically refresh inbox for new emails</div>
+                </div>
+                <label class="toggle">
+                  <input type="checkbox" id="autoRefreshToggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Refresh Interval</div>
+                  <div class="setting-desc">How often to check for new emails</div>
+                </div>
+                <select class="select" id="refreshIntervalSelect">
+                  <option value="30000">30 seconds</option>
+                  <option value="60000">1 minute</option>
+                  <option value="120000">2 minutes</option>
+                  <option value="300000">5 minutes</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Data -->
+            <div class="settings-panel glass" id="panelData" style="padding:var(--space-20)">
+              <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-12)">Data Management</h2>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Reset Sample Data</div>
+                  <div class="setting-desc">Regenerate the 100 sample emails for testing</div>
+                </div>
+                <button class="btn btn-ghost" id="resetDataBtn">Reset Data</button>
+              </div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Clear All Data</div>
+                  <div class="setting-desc">Remove all emails, settings, and cached data</div>
+                </div>
+                <button class="btn btn-ghost" id="clearDataBtn" style="color:var(--sis-error);border-color:var(--sis-error)">Clear All</button>
+              </div>
+            </div>
+
+            <!-- Gmail -->
+            <div class="settings-panel glass" id="panelGmail" style="padding:var(--space-20)">
+              <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-12)">Gmail Integration</h2>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Google Account</div>
+                  <div class="setting-desc" id="gmailStatus">Not connected</div>
+                </div>
+                <button class="btn btn-primary" id="gmailConnectBtn">Connect Gmail</button>
+              </div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-label">Last sync</div><div class="setting-desc" id="lastSyncStatus">Not synchronized yet</div></div><span class="badge badge-success">Read-only</span></div>
+              <div class="setting-row"><div class="setting-info"><div class="setting-label">Account</div><div class="setting-desc" id="accountStatus">Local session</div></div><button class="btn btn-ghost" id="signOutBtn">Sign out</button></div>
+              <div class="setting-row">
+                <div class="setting-info">
+                  <div class="setting-label">Client ID</div>
+                  <div class="setting-desc">Your Google OAuth Client ID (set in js/config.js)</div>
+                </div>
+                <code style="font-size:0.75rem;color:var(--text-muted);max-width:300px;word-break:break-all">486905889991-hft0oso75u10d8bf3t73alj8cmptq830.apps.googleusercontent.com</code>
+              </div>
+              <div style="margin-top:var(--space-16)">
+                <a href="setup-guide.html" class="btn btn-ghost">View Setup Guide</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sample-data.js"></script>
+  <script src="js/email-store.js"></script>
+  <script src="js/gmail.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

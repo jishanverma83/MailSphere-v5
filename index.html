@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MailSphere S – School Email Intelligence System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+<body class="landing-body">
+  <!-- Background orbs -->
+  <div class="landing-bg-orb landing-bg-orb-1"></div>
+  <div class="landing-bg-orb landing-bg-orb-2"></div>
+  <div class="landing-bg-orb landing-bg-orb-3"></div>
+
+  <!-- Nav -->
+  <nav class="landing-nav">
+    <a href="index.html" class="landing-brand">
+      <div class="landing-brand-logo">S</div>
+      <div class="landing-brand-text">Project<span style="background:var(--gradient-primary);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">SIS</span></div>
+    </a>
+    <div class="landing-nav-links">
+      <a href="setup-guide.html" class="landing-nav-link">Setup Guide</a>
+      <a href="dashboard.html" class="landing-nav-link">Dashboard</a>
+      <button class="btn btn-primary" onclick="enterApp()">Get Started</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="landing-hero">
+    <div class="landing-badge animate-slideUp">
+      <span style="width:8px;height:8px;border-radius:50%;background:var(--sis-success)"></span>
+      School Email Management
+    </div>
+    <h1 class="animate-slideUp stagger-1">
+      Transform your school inbox into an
+      <span class="text-gradient">intelligent dashboard</span>
+    </h1>
+    <p class="animate-slideUp stagger-2">
+      MailSphere S automatically categorizes, prioritizes, and organizes hundreds of school emails.
+      Principals and office staff can manage parent inquiries, homework submissions, leave applications,
+      fee reminders, and more — all in one beautiful interface.
+    </p>
+    <div class="landing-cta animate-slideUp stagger-3">
+      <button class="google-btn" id="googleSignInBtn" onclick="handleGoogleSignIn()">
+        <span id="googleIcon"></span>
+        Sign in with Google
+      </button>
+      <button class="btn btn-ghost" onclick="enterApp()">
+        Continue with Demo Data
+      </button>
+    </div>
+
+    <!-- Features -->
+    <div class="landing-features">
+      <div class="glass landing-feature animate-slideUp stagger-4 reveal-on-scroll">
+        <div class="landing-feature-icon" id="featIcon1"></div>
+        <h3>Smart Categories</h3>
+        <p>14 intelligent categories including homework, fees, leave, complaints, and urgent alerts.</p>
+      </div>
+      <div class="glass landing-feature animate-slideUp stagger-5 reveal-on-scroll">
+        <div class="landing-feature-icon" id="featIcon2"></div>
+        <h3>Priority Detection</h3>
+        <p>Automatically identifies urgent, high, medium, and low priority emails using keyword analysis.</p>
+      </div>
+      <div class="glass landing-feature animate-slideUp stagger-6 reveal-on-scroll">
+        <div class="landing-feature-icon" id="featIcon3"></div>
+        <h3>Live Analytics</h3>
+        <p>Interactive charts showing email trends, category breakdowns, and read/unread statistics.</p>
+      </div>
+      <div class="glass landing-feature animate-slideUp stagger-7 reveal-on-scroll">
+        <div class="landing-feature-icon" id="featIcon4"></div>
+        <h3>Gmail Integration</h3>
+        <p>Secure OAuth sign-in with Google. Read your actual inbox directly inside MailSphere S.</p>
+      </div>
+    </div>
+  </section>
+
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sample-data.js"></script>
+  <script src="js/email-store.js"></script>
+  <script src="js/gmail.js"></script>
+  <script>
+    if (Gmail.isSignedIn()) {
+      window.location.replace('dashboard.html');
+    }
+
+    // Set feature icons
+    document.getElementById('featIcon1').innerHTML = Icons.zap;
+    document.getElementById('featIcon2').innerHTML = Icons.priority;
+    document.getElementById('featIcon3').innerHTML = Icons.analytics;
+    document.getElementById('featIcon4').innerHTML = Icons.google;
+    document.getElementById('googleIcon').innerHTML = Icons.google;
+
+    // Init theme
+    Theme.init();
+
+    window.enterApp = function () {
+      EmailStore.init();
+      NotificationStore.init();
+      window.location.href = 'dashboard.html';
+    };
+
+    window.handleGoogleSignIn = async function () {
+      try {
+        const result = await Gmail.init();
+
+        if (!result || result.configured === false) {
+          Toast.show('Gmail not configured', 'Add your Google Client ID to connect Gmail. Opening Setup Guide...', 'warning');
+          setTimeout(() => {
+            window.location.href = 'setup-guide.html';
+          }, 1500);
+          return;
+        }
+
+        if (result.ready) {
+          Gmail.signIn();
+        } else {
+          Toast.show('Google services not ready', 'The Google Identity Services script did not initialize correctly.', 'error');
+        }
+      } catch (err) {
+        Toast.show('Connection failed', err.message || 'Could not connect to Google', 'error');
+      }
+    };
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16 });
+    document.querySelectorAll('.reveal-on-scroll').forEach(element => revealObserver.observe(element));
+
+  </script>
+</body>
+</html>

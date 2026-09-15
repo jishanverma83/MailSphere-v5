@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inbox – MailSphere S</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main-area">
+      <div id="header-mount"></div>
+      <main class="page-content" style="padding-top:var(--space-12)">
+        <div class="page-header" style="margin-bottom:var(--space-12)">
+          <div>
+            <h1 class="page-title">Inbox</h1>
+            <p class="page-subtitle" id="inboxCount"></p>
+          </div>
+          <div style="display:flex;gap:var(--space-8)">
+            <span id="modeBadge" class="badge badge-medium" hidden>Demo Mode</span>
+            <button class="btn btn-ghost" id="gmailSyncBtn">
+              <span id="gmailIcon"></span>
+              Sync Gmail
+            </button>
+          </div>
+        </div>
+
+        <div class="inbox-layout">
+          <!-- Email list -->
+          <div class="inbox-list-panel glass">
+            <div class="inbox-filters" id="inboxFilters"></div>
+            <div class="inbox-list" id="emailList"></div>
+          </div>
+
+          <div class="inbox-divider" id="inboxDivider" role="separator" aria-label="Resize inbox list" tabindex="0"></div>
+
+          <!-- Email reader -->
+          <div class="email-reader glass" id="emailReader">
+            <div class="email-reader-empty" id="readerEmpty">
+              <span id="emptyIcon"></span>
+              <div style="font-size:0.9rem;font-weight:600">Select an email to read</div>
+              <div style="font-size:0.8rem">Choose a message from the list to view its full content</div>
+            </div>
+            <div id="readerContent" class="hidden" style="display:flex;flex-direction:column;height:100%"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sample-data.js"></script>
+  <script src="js/email-store.js"></script>
+  <script src="js/gmail.js"></script>
+  <script src="js/inbox.js"></script>
+</body>
+</html>

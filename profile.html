@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile – MailSphere S</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <div id="sidebar-mount"></div>
+    <div class="main-area">
+      <div id="header-mount"></div>
+      <main class="page-content">
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">My Profile</h1>
+            <p class="page-subtitle">Manage your account information</p>
+          </div>
+        </div>
+
+        <div class="profile-grid">
+          <!-- Profile card -->
+          <div class="profile-card glass animate-slideUp">
+            <div class="profile-avatar-large" id="profileAvatar"></div>
+            <div class="profile-name" id="profileName"></div>
+            <div class="profile-role" id="profileRole"></div>
+            <div class="profile-stats">
+              <div>
+                <div class="profile-stat-value" id="statTotal">0</div>
+                <div class="profile-stat-label">Total Emails</div>
+              </div>
+              <div>
+                <div class="profile-stat-value" id="statUnread">0</div>
+                <div class="profile-stat-label">Unread</div>
+              </div>
+              <div>
+                <div class="profile-stat-value" id="statStarred">0</div>
+                <div class="profile-stat-label">Starred</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile form -->
+          <div class="profile-form glass animate-slideUp stagger-1">
+            <h2 style="font-size:1.1rem;font-weight:700;margin-bottom:var(--space-16)">Personal Information</h2>
+            <form id="profileForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Full Name</label>
+                  <input class="input" type="text" id="inputName" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Role</label>
+                  <input class="input" type="text" id="inputRole" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email</label>
+                <input class="input" type="email" id="inputEmail" />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Phone</label>
+                  <input class="input" type="tel" id="inputPhone" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">School</label>
+                  <input class="input" type="text" id="inputSchool" />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary" style="margin-top:var(--space-8)">Save Changes</button>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/sample-data.js"></script>
+  <script src="js/email-store.js"></script>
+  <script src="js/gmail.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>

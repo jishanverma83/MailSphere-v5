@@ -35,10 +35,27 @@
           </div>
           <div class="email-reader-body" style="padding: 0 var(--space-16) var(--space-16);">
             <ol style="padding-left: 1.25rem; line-height: 1.8; color: var(--text-primary);">
-              <li>Open your Google Cloud Console.</li>
-              <li>Create a web OAuth client ID.</li>
-              <li>Add http://localhost:5173 as an authorized JavaScript origin.</li>
-              <li>Update the value in <strong>js/config.js</strong> for <strong>googleClientId</strong>.</li>
+              <li>Open your Google Cloud Console and select the existing OAuth Web Client ID.</li>
+              <li>Confirm the client ID matches <strong>486905889991-hft0osc75u10d8bf3t73alj8cmptq830.apps.googleusercontent.com</strong>.</li>
+              <li>Add these Authorized JavaScript Origins:
+                <ul>
+                  <li>https://mail-sphere-v5.vercel.app</li>
+                  <li>http://127.0.0.1:5173</li>
+                  <li>http://localhost:5173</li>
+                  <li>http://127.0.0.1:4173</li>
+                  <li>http://localhost:4173</li>
+                </ul>
+              </li>
+              <li>Add these Authorized Redirect URIs:
+                <ul>
+                  <li>https://mail-sphere-v5.vercel.app/auth/callback</li>
+                  <li>http://127.0.0.1:5173/auth/callback</li>
+                  <li>http://localhost:5173/auth/callback</li>
+                  <li>http://127.0.0.1:4173/auth/callback</li>
+                  <li>http://localhost:4173/auth/callback</li>
+                </ul>
+              </li>
+              <li>Update the value in <strong>js/config.js</strong> for <strong>googleClientId</strong> only if needed.</li>
               <li>Reload the app and click the Google sign-in button.</li>
             </ol>
             <p class="chart-card-subtitle" style="margin-top: var(--space-12);">While MailSphere is in Google OAuth Testing mode, only approved Gmail accounts can sign in. To request access, contact <a href="mailto:jishanverma43@gmail.com?subject=MailSphere%20OAuth%20Test%20Access%20Request&body=Hi%20Jishan,%0A%0APlease%20add%20my%20Gmail%20account%20to%20the%20MailSphere%20OAuth%20Testing%20Audience.%0A%0AMy%20Gmail:%20_____________%0A%0AThank%20you.">jishanverma43@gmail.com</a>.</p>

@@ -3,7 +3,7 @@
    ============================================================ */
 
 const OAuthAccessRequest = {
-  developerEmail: 'jishanverma42@gmail.com',
+  developerEmail: 'jishanverma43@gmail.com',
 
   isTestUserError(response) {
     const details = [
@@ -35,7 +35,7 @@ const OAuthAccessRequest = {
         <div class="oauth-access-info">${Icons.info}<span>Contact the developer: <a href="mailto:${this.developerEmail}">${this.developerEmail}</a></span></div>
         <div class="oauth-access-actions">
           <button class="btn btn-primary" type="button" id="copyDeveloperEmail">${Icons.clipboard} Copy Developer Email</button>
-          <button class="btn btn-ghost" type="button" id="openGmailRequest">${Icons.mail} Open Gmail Request</button>
+          <button class="btn btn-ghost" type="button" id="openGmailRequest">${Icons.mail} Request Access</button>
         </div>
       </section>
     `;
@@ -65,8 +65,8 @@ const OAuthAccessRequest = {
       Toast.show('Copied', 'Developer email copied to your clipboard.', 'success');
     });
     modal.querySelector('#openGmailRequest').addEventListener('click', () => {
-      const subject = encodeURIComponent('MailSphere OAuth Test User Access Request');
-      const body = encodeURIComponent('Hello Jishan,\n\nPlease add my Gmail account to the MailSphere Google OAuth Test Users list so I can use the application.\n\nGmail:\n\nThank you.');
+      const subject = encodeURIComponent('MailSphere OAuth Test Access Request');
+      const body = encodeURIComponent('Hello Jishan,\n\nPlease add my Gmail to the MailSphere OAuth Testing Audience.\n\nMy Gmail:');
       window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${this.developerEmail}&su=${subject}&body=${body}`, '_blank', 'noopener');
     });
     document.addEventListener('keydown', handleEscape);
@@ -82,6 +82,20 @@ const Gmail = {
   user: null,
   isAuthenticating: false,
   isSyncing: false,
+
+  showOAuthConfigurationError(title, description, actionLabel = 'Open Setup Guide', actionHref = './setup-guide.html') {
+    Toast.show(title, description, 'error');
+    const toast = document.querySelector('.toast-container .toast:last-child');
+    if (!toast || toast.querySelector('[data-open-setup-guide]')) return;
+
+    const setupLink = document.createElement('a');
+    setupLink.href = actionHref;
+    setupLink.textContent = actionLabel;
+    setupLink.dataset.openSetupGuide = 'true';
+    setupLink.className = 'btn btn-ghost';
+    setupLink.style.cssText = 'display:inline-flex;margin-top:8px;padding:5px 9px;font-size:0.75rem;';
+    toast.querySelector('.toast-content')?.appendChild(setupLink);
+  },
 
   init() {
     return new Promise((resolve, reject) => {
@@ -156,8 +170,16 @@ const Gmail = {
   },
 
   warnForUnexpectedOrigin() {
-    if (window.location.hostname === 'localhost' && window.location.port && window.location.port !== '5173') {
-      Toast.show('OAuth origin check', `Add http://localhost:${window.location.port} to Google Cloud authorized origins.`, 'warning');
+    const currentOrigin = window.location.origin;
+    const supportedOrigins = [
+      'https://mail-sphere-v5.vercel.app',
+      'http://127.0.0.1:5173',
+      'http://localhost:5173',
+      'http://127.0.0.1:5174',
+      'http://localhost:5174'
+    ];
+    if (!supportedOrigins.includes(currentOrigin)) {
+      this.showOAuthConfigurationError('OAuth origin check', `Authorize ${currentOrigin} in Google Cloud before signing in.`);
     }
   },
 
@@ -165,7 +187,15 @@ const Gmail = {
     this.isAuthenticating = false;
     if (response.error) {
       ErrorSystem.report('OAuth error response', response);
-      if (OAuthAccessRequest.isTestUserError(response)) {
+      const oauthError = String(response.error).toLowerCase();
+      if (oauthError === 'origin_mismatch') {
+        this.showOAuthConfigurationError('Google OAuth origin is not authorized', `Add ${SIS_CONFIG.oauthOrigin} to the OAuth client's authorized JavaScript origins.`);
+      } else if (oauthError === 'redirect_uri_mismatch') {
+        this.showOAuthConfigurationError('Google OAuth redirect URI is not authorized', `Add ${SIS_CONFIG.oauthRedirectUri} to the OAuth client's authorized redirect URIs.`);
+      } else if (oauthError === 'access_denied') {
+        const requestUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(OAuthAccessRequest.developerEmail)}&su=${encodeURIComponent('MailSphere OAuth Test Access Request')}&body=${encodeURIComponent('Hello Jishan,\n\nPlease add my Gmail to the MailSphere OAuth Testing Audience.\n\nMy Gmail:')}`;
+        this.showOAuthConfigurationError('Your Gmail is not in the OAuth Testing Audience', 'Request access from the developer before signing in.', 'Request Access', requestUrl);
+      } else if (OAuthAccessRequest.isTestUserError(response)) {
         Toast.show('Gmail access unavailable', "Your Gmail account isn't currently authorized to use MailSphere during testing.", 'warning');
         OAuthAccessRequest.show();
       } else {
@@ -183,6 +213,7 @@ const Gmail = {
 
     this.accessToken = response.access_token;
     this.signedIn = true;
+    localStorage.removeItem('signed_out');
     sessionStorage.setItem(SIS_CONFIG.storageKeys.gmailToken, this.accessToken);
     localStorage.setItem(SIS_CONFIG.storageKeys.gmailToken, this.accessToken);
     Toast.show('Signed in to Gmail', 'Successfully connected to your Gmail account', 'success');
@@ -211,40 +242,79 @@ const Gmail = {
     }
   },
 
-  signOut() {
-    if (this.accessToken) {
-      if (window.google && window.google.accounts && window.google.accounts.oauth2) {
-        try {
-          window.google.accounts.oauth2.revoke(this.accessToken, () => {
-            this.clearSession();
-            Toast.show('Signed out', 'Gmail account disconnected', 'info');
-          });
-          return;
-        } catch (e) {
-          console.warn('Revoke token failed', e);
-        }
+  async signOut() {
+    localStorage.setItem('signed_out', 'true');
+    const token = this.accessToken;
+    if (token && window.google?.accounts?.oauth2?.revoke) {
+      try {
+        await new Promise(resolve => window.google.accounts.oauth2.revoke(token, resolve));
+      } catch (error) {
+        console.warn('Revoke token failed', error);
       }
     }
 
-    this.clearSession();
-    Toast.show('Signed out', 'Gmail account disconnected', 'info');
+    await this.clearSession();
+    window.location.replace('./index.html');
   },
 
-  clearSession() {
+  async clearSession() {
     this.accessToken = null;
     this.signedIn = false;
     this.user = null;
     this.isAuthenticating = false;
     this.isSyncing = false;
-    sessionStorage.removeItem(SIS_CONFIG.storageKeys.gmailToken);
-    sessionStorage.removeItem(SIS_CONFIG.storageKeys.googleUser);
-    localStorage.removeItem(SIS_CONFIG.storageKeys.gmailToken);
-    localStorage.removeItem(SIS_CONFIG.storageKeys.googleUser);
+    const authKeys = [
+      'gmail_token', 'gmail_profile', 'gmail_user', 'gmail_email', 'gmail_session',
+      'sis_session', 'access_token', 'refresh_token', 'userProfile',
+      SIS_CONFIG.storageKeys.gmailToken,
+      SIS_CONFIG.storageKeys.googleUser,
+      SIS_CONFIG.storageKeys.profile,
+      SIS_CONFIG.storageKeys.lastSync,
+      'lastSync'
+    ];
+    authKeys.forEach(key => {
+      sessionStorage.removeItem(key);
+      localStorage.removeItem(key);
+    });
+
+    if (window.indexedDB?.databases) {
+      const databases = await window.indexedDB.databases();
+      await Promise.all(databases
+        .filter(database => /auth|gmail|session|token/i.test(database.name || ''))
+        .map(database => new Promise(resolve => {
+          const request = window.indexedDB.deleteDatabase(database.name);
+          request.onsuccess = request.onerror = request.onblocked = resolve;
+        })));
+    }
+
     window.dispatchEvent(new CustomEvent('sis:signed-out'));
   },
 
   isSignedIn() {
     return this.signedIn && !!this.accessToken;
+  },
+
+  async validateSession() {
+    if (!this.accessToken) return false;
+    try {
+      const response = await fetch(SIS_CONFIG.userInfoUrl, {
+        headers: { Authorization: `Bearer ${this.accessToken}` }
+      });
+      if (!response.ok) {
+        await this.clearSession();
+        return false;
+      }
+      const user = await response.json();
+      this.user = user;
+      sessionStorage.setItem(SIS_CONFIG.storageKeys.googleUser, JSON.stringify(user));
+      localStorage.setItem(SIS_CONFIG.storageKeys.googleUser, JSON.stringify(user));
+      Profile.applyGoogleUser(user);
+      return true;
+    } catch (error) {
+      ErrorSystem.report('Session validation failed', error);
+      await this.clearSession();
+      return false;
+    }
   },
 
   async fetchUserProfile() {

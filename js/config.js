@@ -3,6 +3,8 @@
    by Jishan Verma
    ============================================================ */
 
+const origin = window.location.origin;
+
 const SIS_CONFIG = {
   appName: 'MailSphere S',
   appTagline: 'by Jishan Verma',
@@ -10,6 +12,8 @@ const SIS_CONFIG = {
 
   // Google OAuth config
   googleClientId: '486905889991-hft0oso75u10d8bf3t73alj8cmptq830.apps.googleusercontent.com',
+  oauthOrigin: origin,
+  oauthRedirectUri: `${origin}/auth/callback`,
   gmailScopes: 'openid email profile https://www.googleapis.com/auth/gmail.readonly',
   gmailMessagesUrl: 'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=25',
   userInfoUrl: 'https://www.googleapis.com/oauth2/v3/userinfo',

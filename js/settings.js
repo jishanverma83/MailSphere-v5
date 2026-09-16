@@ -23,7 +23,7 @@ sidebarToggle.addEventListener('change', () => Settings.update({ sidebarCollapse
 const lastSync = localStorage.getItem(SIS_CONFIG.storageKeys.lastSync);
 document.getElementById('lastSyncStatus').textContent = lastSync ? new Date(lastSync).toLocaleString() : 'Not synchronized yet';
 document.getElementById('accountStatus').textContent = Profile.get().email || 'Local session';
-document.getElementById('signOutBtn').addEventListener('click', () => { Gmail.signOut(); window.location.href = 'index.html'; });
+document.getElementById('signOutBtn').addEventListener('click', () => Gmail.signOut());
 
 // ---------- Panel switching ----------
 document.querySelectorAll('.settings-nav-item').forEach(item => {

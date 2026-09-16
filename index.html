@@ -90,8 +90,13 @@
   <script src="./js/email-store.js"></script>
   <script src="./js/gmail.js"></script>
   <script>
-    if (Gmail.isSignedIn()) {
-      window.location.replace('dashboard.html');
+    const signedOut = localStorage.getItem('signed_out') === 'true';
+    if (signedOut) {
+      localStorage.removeItem('signed_out');
+    } else if (Gmail.isSignedIn()) {
+      Gmail.validateSession().then(isValid => {
+        if (isValid) window.location.replace('dashboard.html');
+      });
     }
 
     // Set feature icons

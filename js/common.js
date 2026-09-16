@@ -454,11 +454,11 @@ const Header = {
 /* ---------- Profile (LocalStorage) ---------- */
 const Profile = {
   defaults: {
-    name: 'Sarah Mitchell',
-    role: 'Principal',
-    email: 'sarah.mitchell@school.edu',
-    phone: '+1 555-0100',
-    school: 'Greenwood International School',
+    name: '',
+    role: '',
+    email: '',
+    phone: '',
+    school: '',
     avatar: null
   },
   get() {

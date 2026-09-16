@@ -3,7 +3,7 @@
    ============================================================ */
 
 const OAuthAccessRequest = {
-  developerEmail: 'jishanverma43@gmail.com',
+  setupGuide: './setup-guide.html',
 
   isTestUserError(response) {
     const details = [
@@ -32,10 +32,9 @@ const OAuthAccessRequest = {
         <p class="oauth-access-eyebrow">Google OAuth Test Mode</p>
         <h2 id="oauthAccessTitle">Request Gmail Access</h2>
         <p class="oauth-access-message">MailSphere is currently in Google OAuth Test Mode. Your Gmail account must be added to the approved Test Users list before you can sign in.</p>
-        <div class="oauth-access-info">${Icons.info}<span>Contact the developer: <a href="mailto:${this.developerEmail}">${this.developerEmail}</a></span></div>
+        <div class="oauth-access-info">${Icons.info}<span>See the <a href="${this.setupGuide}">Setup Guide</a> for OAuth access instructions.</span></div>
         <div class="oauth-access-actions">
-          <button class="btn btn-primary" type="button" id="copyDeveloperEmail">${Icons.clipboard} Copy Developer Email</button>
-          <button class="btn btn-ghost" type="button" id="openGmailRequest">${Icons.mail} Request Access</button>
+          <a class="btn btn-primary" href="${this.setupGuide}">${Icons.book} Open Setup Guide</a>
         </div>
       </section>
     `;
@@ -49,26 +48,6 @@ const OAuthAccessRequest = {
       document.removeEventListener('keydown', handleEscape);
     };
     modal.querySelectorAll('[data-oauth-close]').forEach(element => element.addEventListener('click', close));
-    modal.querySelector('#copyDeveloperEmail').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(this.developerEmail);
-      } catch {
-        const input = document.createElement('textarea');
-        input.value = this.developerEmail;
-        input.style.position = 'fixed';
-        input.style.opacity = '0';
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        input.remove();
-      }
-      Toast.show('Copied', 'Developer email copied to your clipboard.', 'success');
-    });
-    modal.querySelector('#openGmailRequest').addEventListener('click', () => {
-      const subject = encodeURIComponent('MailSphere OAuth Test Access Request');
-      const body = encodeURIComponent('Hello Jishan,\n\nPlease add my Gmail to the MailSphere OAuth Testing Audience.\n\nMy Gmail:');
-      window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${this.developerEmail}&su=${subject}&body=${body}`, '_blank', 'noopener');
-    });
     document.addEventListener('keydown', handleEscape);
   }
 };
@@ -105,7 +84,7 @@ const Gmail = {
       }
 
       const savedUser = sessionStorage.getItem(SIS_CONFIG.storageKeys.googleUser) || localStorage.getItem(SIS_CONFIG.storageKeys.googleUser);
-      if (savedUser) {
+      if (this.accessToken && savedUser) {
         try {
           this.user = JSON.parse(savedUser);
           Profile.applyGoogleUser(this.user);
@@ -193,8 +172,7 @@ const Gmail = {
       } else if (oauthError === 'redirect_uri_mismatch') {
         this.showOAuthConfigurationError('Google OAuth redirect URI is not authorized', `Add ${SIS_CONFIG.oauthRedirectUri} to the OAuth client's authorized redirect URIs.`);
       } else if (oauthError === 'access_denied') {
-        const requestUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(OAuthAccessRequest.developerEmail)}&su=${encodeURIComponent('MailSphere OAuth Test Access Request')}&body=${encodeURIComponent('Hello Jishan,\n\nPlease add my Gmail to the MailSphere OAuth Testing Audience.\n\nMy Gmail:')}`;
-        this.showOAuthConfigurationError('Your Gmail is not in the OAuth Testing Audience', 'Request access from the developer before signing in.', 'Request Access', requestUrl);
+        this.showOAuthConfigurationError('Your Gmail is not in the OAuth Testing Audience', 'Review the Setup Guide for access instructions.', 'Open Setup Guide', OAuthAccessRequest.setupGuide);
       } else if (OAuthAccessRequest.isTestUserError(response)) {
         Toast.show('Gmail access unavailable', "Your Gmail account isn't currently authorized to use MailSphere during testing.", 'warning');
         OAuthAccessRequest.show();
@@ -243,7 +221,6 @@ const Gmail = {
   },
 
   async signOut() {
-    localStorage.setItem('signed_out', 'true');
     const token = this.accessToken;
     if (token && window.google?.accounts?.oauth2?.revoke) {
       try {
@@ -254,6 +231,7 @@ const Gmail = {
     }
 
     await this.clearSession();
+  localStorage.setItem('signed_out', 'true');
     window.location.replace('./index.html');
   },
 
@@ -270,7 +248,8 @@ const Gmail = {
       SIS_CONFIG.storageKeys.googleUser,
       SIS_CONFIG.storageKeys.profile,
       SIS_CONFIG.storageKeys.lastSync,
-      'lastSync'
+      'lastSync',
+      'signed_out'
     ];
     authKeys.forEach(key => {
       sessionStorage.removeItem(key);
@@ -280,7 +259,7 @@ const Gmail = {
     if (window.indexedDB?.databases) {
       const databases = await window.indexedDB.databases();
       await Promise.all(databases
-        .filter(database => /auth|gmail|session|token/i.test(database.name || ''))
+        .filter(database => /^(auth|gmail|oauth|token|session)([-_]|$)/i.test(database.name || ''))
         .map(database => new Promise(resolve => {
           const request = window.indexedDB.deleteDatabase(database.name);
           request.onsuccess = request.onerror = request.onblocked = resolve;

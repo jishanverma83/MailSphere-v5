@@ -34,6 +34,8 @@ export default defineConfig({
         settings: resolve(projectRoot, 'settings.html'),
         profile: resolve(projectRoot, 'profile.html'),
         about: resolve(projectRoot, 'about.html'),
+        privacy: resolve(projectRoot, 'privacy.html'),
+        terms: resolve(projectRoot, 'terms.html'),
         alerts: resolve(projectRoot, 'alerts.html'),
         setupGuide: resolve(projectRoot, 'setup-guide.html')
       }

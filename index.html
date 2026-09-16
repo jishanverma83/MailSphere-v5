@@ -91,9 +91,7 @@
   <script src="./js/gmail.js"></script>
   <script>
     const signedOut = localStorage.getItem('signed_out') === 'true';
-    if (signedOut) {
-      localStorage.removeItem('signed_out');
-    } else if (Gmail.isSignedIn()) {
+    if (!signedOut && Gmail.isSignedIn()) {
       Gmail.validateSession().then(isValid => {
         if (isValid) window.location.replace('dashboard.html');
       });

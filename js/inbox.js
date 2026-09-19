@@ -44,10 +44,7 @@ document.getElementById('gmailSyncBtn').addEventListener('click', async () => {
     const result = await Gmail.init();
 
     if (!result || result.configured === false) {
-      Toast.show('Gmail not configured', 'Add your Google Client ID to connect Gmail. Opening Setup Guide...', 'warning');
-      setTimeout(() => {
-        window.location.href = 'setup-guide.html';
-      }, 1500);
+      Toast.show('Gmail not configured', 'Google sign-in is not available in this environment.', 'warning');
       return;
     }
 
@@ -211,6 +208,7 @@ function openEmail(id) {
     ` : ''}
   `;
   document.getElementById('emailReader').classList.add('reader-has-email');
+  AIReader.mount(email);
 }
 
 window.toggleReaderFullscreen = function() {

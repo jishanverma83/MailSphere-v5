@@ -34,6 +34,26 @@ document.getElementById('statGrid').innerHTML = statCards.map((s, i) => `
 `).join('');
 animateCounters(document.getElementById('statGrid'));
 
+const intelligenceCards = document.getElementById('intelligenceCards');
+const intelligence = EmailStore.getSchoolIntelligence();
+if (intelligenceCards) {
+  intelligenceCards.innerHTML = intelligence.length ? intelligence.map(card => `
+    <a class="intelligence-card" href="inbox.html?filter=${card.category}">
+      <span class="intelligence-icon" style="color:${CATEGORY_META[card.category].color}">${Icons[CATEGORY_META[card.category].icon] || Icons.info}</span>
+      <span><strong>${CATEGORY_META[card.category].label}</strong><small>${card.count} message${card.count === 1 ? '' : 's'}</small></span>
+    </a>`).join('') : '<div class="empty-state"><div class="empty-state-title">No school signals yet</div></div>';
+}
+
+const timeline = document.getElementById('smartTimeline');
+if (timeline) {
+  const events = EmailStore.getTimeline();
+  timeline.innerHTML = events.length ? events.map(event => `
+    <a class="timeline-event" href="inbox.html?id=${event.emailId}">
+      <time>${event.date.toLocaleDateString('en-US', { day: 'numeric', month: 'short' })}</time>
+      <span><strong>${event.label}</strong><small>${event.subject}</small></span>
+    </a>`).join('') : '<div class="empty-state"><div class="empty-state-title">No dated events detected</div></div>';
+}
+
 const lastSync = localStorage.getItem(SIS_CONFIG.storageKeys.lastSync);
 const syncStatus = document.getElementById('syncStatus');
 if (syncStatus) {

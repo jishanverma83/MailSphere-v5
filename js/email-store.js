@@ -235,7 +235,16 @@ const EmailStore = {
   search(query) {
     this.init();
     if (!query) return this.getActive();
-    const q = query.toLowerCase();
+    const normalizedQuery = query.toLowerCase()
+      .replace(/show|find|emails?|from|this|week|about|in|of|the|principal/gi, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    const aliases = {
+      fee: 'fees', fees: 'fees', homework: 'homework', transport: 'transport',
+      circular: 'circular', principal: 'principal', exam: 'exam', exams: 'exam',
+      leave: 'leave', emergency: 'urgent'
+    };
+    const q = aliases[normalizedQuery] || normalizedQuery;
     return this.emails.filter(e =>
       !e.archived && (
         (e.sender && e.sender.toLowerCase().includes(q)) ||
@@ -249,6 +258,43 @@ const EmailStore = {
         (e.className && e.className.toLowerCase().includes(q))
       )
     ).sort((a, b) => new Date(b.date) - new Date(a.date));
+  },
+
+  getSchoolIntelligence() {
+    this.init();
+    const categories = ['homework', 'fees', 'exam', 'circular', 'leave', 'urgent', 'transport'];
+    return categories.map(category => ({
+      category,
+      count: this.emails.filter(email => !email.archived && email.category === category).length,
+      emails: this.emails.filter(email => !email.archived && email.category === category).slice(0, 4)
+    })).filter(card => card.count > 0);
+  },
+
+  getTimeline() {
+    this.init();
+    const datePattern = /\b(\d{1,2})(?:st|nd|rd|th)?[\s-]+(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b/ig;
+    const monthNames = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+    const events = [];
+    this.getActive().forEach(email => {
+      const text = `${email.subject} ${email.body}`;
+      const match = datePattern.exec(text);
+      if (!match) return;
+      const month = monthNames[match[2].slice(0, 3).toLowerCase()];
+      const date = new Date(new Date().getFullYear(), month, Number(match[1]));
+      events.push({ date, label: CATEGORY_META[email.category]?.label || 'School email', subject: email.subject, emailId: email.id });
+      datePattern.lastIndex = 0;
+    });
+    return events.sort((a, b) => a.date - b.date).slice(0, 8);
+  },
+
+  getDeadlines() {
+    this.init();
+    return this.getActive().filter(email => /deadline|due|last date|submit|payment|pay by/i.test(`${email.subject} ${email.body}`)).slice(0, 6).map(email => ({
+      emailId: email.id,
+      subject: email.subject,
+      category: CATEGORY_META[email.category]?.label || 'School email',
+      date: email.date
+    }));
   },
 
   filter(filterType) {
@@ -420,6 +466,18 @@ const EmailStore = {
   clearCache() {
     this.emails = [];
     this.save();
+    window.dispatchEvent(new CustomEvent('sis:emails-cleared'));
+  },
+
+  reset() {
+    this.emails = [];
+    this.initialized = false;
+    try {
+      Object.values(SIS_CONFIG.storageKeys).forEach(key => localStorage.removeItem(key));
+      localStorage.removeItem('sis_emails');
+    } catch (error) {
+      console.warn('Email cache reset failed', error);
+    }
     window.dispatchEvent(new CustomEvent('sis:emails-cleared'));
   },
 

@@ -62,15 +62,15 @@ const Gmail = {
   isAuthenticating: false,
   isSyncing: false,
 
-  showOAuthConfigurationError(title, description, actionLabel = 'Open Setup Guide', actionHref = './setup-guide.html') {
+  showOAuthConfigurationError(title, description, actionLabel = '', actionHref = '') {
     Toast.show(title, description, 'error');
     const toast = document.querySelector('.toast-container .toast:last-child');
-    if (!toast || toast.querySelector('[data-open-setup-guide]')) return;
+    if (!toast || !actionLabel || !actionHref || toast.querySelector('[data-open-oauth-action]')) return;
 
     const setupLink = document.createElement('a');
     setupLink.href = actionHref;
     setupLink.textContent = actionLabel;
-    setupLink.dataset.openSetupGuide = 'true';
+    setupLink.dataset.openOauthAction = 'true';
     setupLink.className = 'btn btn-ghost';
     setupLink.style.cssText = 'display:inline-flex;margin-top:8px;padding:5px 9px;font-size:0.75rem;';
     toast.querySelector('.toast-content')?.appendChild(setupLink);
@@ -208,12 +208,13 @@ const Gmail = {
       return;
     }
     if (!this.tokenClient) {
-      Toast.show('Gmail not configured', 'Please set up your Google Client ID first. See the Setup Guide.', 'warning');
+      Toast.show('Gmail not configured', 'Please configure the Google Client ID before connecting Gmail.', 'warning');
       return;
     }
     this.isAuthenticating = true;
     try {
-      this.tokenClient.requestAccessToken({ prompt });
+      localStorage.removeItem('signed_out');
+      this.tokenClient.requestAccessToken({ prompt: prompt || 'select_account' });
     } catch (err) {
       this.isAuthenticating = false;
       throw err;
@@ -241,6 +242,9 @@ const Gmail = {
     this.user = null;
     this.isAuthenticating = false;
     this.isSyncing = false;
+    if (window.EmailStore?.reset) EmailStore.reset();
+    sessionStorage.clear();
+    localStorage.clear();
     const authKeys = [
       'gmail_token', 'gmail_profile', 'gmail_user', 'gmail_email', 'gmail_session',
       'sis_session', 'access_token', 'refresh_token', 'userProfile',

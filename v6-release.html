@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MailSphere V6 Release Notes</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+</head>
+<body>
+  <div class="app-shell"><div id="sidebar-mount"></div><div class="main-area"><div id="header-mount"></div>
+    <main class="page-content release-page">
+      <div class="page-header"><div><h1 class="page-title">MailSphere V6</h1><p class="page-subtitle">Release notes · School email intelligence, with the V5 foundation intact.</p></div></div>
+      <section class="release-grid">
+        <article class="chart-card glass"><div class="chart-card-title">Reader AI</div><p class="release-copy">Quick Reply, Summarize, Translate, Explain Simply, and Draft Reply now open from a floating reader action. Results are editable before Gmail compose opens.</p></article>
+        <article class="chart-card glass"><div class="chart-card-title">School Intelligence</div><p class="release-copy">Homework, fees, exams, circulars, leave, emergency, and transport signals are derived into dashboard cards and a clickable smart timeline.</p></article>
+        <article class="chart-card glass"><div class="chart-card-title">Reliability</div><p class="release-copy">Sign out revokes the OAuth token, clears browser caches and the in-memory store, disables automatic account selection, and survives refreshes on localhost and Vercel.</p></article>
+        <article class="chart-card glass"><div class="chart-card-title">AI deployment note</div><p class="release-copy">Set a server-side <code>window.MAILSPHERE_RUNTIME.geminiEndpoint</code> proxy for Gemini. API keys are intentionally never stored in client code; local fallback drafts keep the reader usable when offline.</p></article>
+      </section>
+    </main>
+  </div></div>
+  <script src="./js/config.js"></script><script src="./js/common.js"></script><script src="./js/sample-data.js"></script><script src="./js/email-store.js"></script><script src="./js/gmail.js"></script>
+  <script>initPage('release'); EmailStore.init(); NotificationStore.init();</script>
+</body>
+</html>

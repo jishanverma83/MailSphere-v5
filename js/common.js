@@ -224,7 +224,7 @@ const Sidebar = {
       { id: 'alerts', label: 'Alerts', icon: 'alertTriangle', href: 'alerts.html' },
       { id: 'settings', label: 'Settings', icon: 'settings', href: 'settings.html' },
       { id: 'about', label: 'About', icon: 'info', href: 'about.html' },
-      { id: 'setup', label: 'Setup Guide', icon: 'book', href: 'setup-guide.html' }
+      { id: 'release', label: 'V6 Release Notes', icon: 'sparkle', href: 'v6-release.html' }
     ];
 
     const profile = Profile.get();
@@ -337,8 +337,7 @@ const Header = {
               </div>
               <a href="profile.html" class="profile-dropdown-item">${Icons.user} My Profile</a>
               <a href="settings.html" class="profile-dropdown-item">${Icons.settings} Settings</a>
-              <a href="setup-guide.html" class="profile-dropdown-item">${Icons.book} Setup Guide</a>
-              <a href="index.html" class="profile-dropdown-item" style="color:var(--sis-error)">${Icons.logout} Sign Out</a>
+              <a href="index.html" class="profile-dropdown-item" id="headerSignOut" style="color:var(--sis-error)">${Icons.logout} Sign Out</a>
             </div>
           </div>
         </div>
@@ -419,6 +418,12 @@ const Header = {
     }
 
     // Global search
+    const signOut = document.getElementById('headerSignOut');
+    signOut?.addEventListener('click', event => {
+      event.preventDefault();
+      Gmail.signOut();
+    });
+
     const search = document.getElementById('globalSearch');
     if (search) {
       search.addEventListener('input', (e) => {

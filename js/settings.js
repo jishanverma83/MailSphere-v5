@@ -128,10 +128,7 @@ gmailConnectBtn.addEventListener('click', async () => {
     const result = await Gmail.init();
 
     if (!result || result.configured === false) {
-      Toast.show('Gmail not configured', 'Add your Google Client ID in the setup guide to enable Gmail sync.', 'warning');
-      setTimeout(() => {
-        window.location.href = 'setup-guide.html';
-      }, 1500);
+      Toast.show('Gmail not configured', 'Google sign-in is not available in this environment.', 'warning');
       return;
     }
 

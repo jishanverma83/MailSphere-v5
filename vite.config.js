@@ -37,7 +37,9 @@ export default defineConfig({
         privacy: resolve(projectRoot, 'privacy.html'),
         terms: resolve(projectRoot, 'terms.html'),
         alerts: resolve(projectRoot, 'alerts.html'),
-        setupGuide: resolve(projectRoot, 'setup-guide.html')
+        v6Release: resolve(projectRoot, 'v6-release.html'),
+        privacy: resolve(projectRoot, 'privacy.html'),
+        terms: resolve(projectRoot, 'terms.html')
       }
     }
   }

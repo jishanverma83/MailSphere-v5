@@ -8,7 +8,7 @@ const origin = window.location.origin;
 const SIS_CONFIG = {
   appName: 'MailSphere S',
   appTagline: 'by Jishan Verma',
-  appVersion: '1.2.0 (Production)',
+  appVersion: '6.1 (Production)',
 
   // Google OAuth config
   googleClientId: '486905889991-hft0oso75u10d8bf3t73alj8cmptq830.apps.googleusercontent.com',
